@@ -1,0 +1,15 @@
+package lilylicious.brief.proxies;
+
+import net.minecraft.entity.player.EntityPlayer;
+
+public class ServerProxy implements IProxy {
+    public EntityPlayer getClientPlayer() {
+        return null;
+    }
+
+    public void registerClientOnlyEvents() {
+    }
+
+    public void registerModels() {
+    }
+}
