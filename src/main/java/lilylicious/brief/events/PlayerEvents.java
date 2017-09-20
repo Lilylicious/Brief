@@ -35,10 +35,7 @@ public class PlayerEvents {
 
             ItemStack stack = new ItemStack(Blocks.CRAFTING_TABLE);
 
-            if(IngredientCache.ingredientsCache.containsKey(stack.toString().toLowerCase()))
-                GuiHandler.rootItem = IngredientCache.ingredientsCache.get(stack.toString().toLowerCase());
-            else
-                GuiHandler.rootItem = new RecipeContainer(stack);
+            //GuiHandler.rootItem = new RecipeContainer(stack);
 
             player.openGui(BriefCore.instance, 0, player.getEntityWorld(), (int)player.posX, (int)player.posY, (int)player.posZ);
         }

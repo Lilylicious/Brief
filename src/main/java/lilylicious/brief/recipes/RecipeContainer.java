@@ -2,6 +2,7 @@ package lilylicious.brief.recipes;
 
 import lilylicious.brief.utils.BriefLogger;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.RenderItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.*;
@@ -9,67 +10,78 @@ import net.minecraft.item.crafting.*;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 public class RecipeContainer {
 
-    /*PLANS
-    * Count each ingredient. Find recipe that makes ingredient. Only make as many as you need.
-    * */
+    public ItemStack rootItem;
 
-    public Ingredient rootItem;
-    public List<RecipeContainer> ingredientContainers;
+    public List<ItemStack> ingredientStacks;
+
     public int tier = -1;
     public static int counter = -1;
 
     public RecipeContainer(ItemStack stack) {
         BriefLogger.logInfo("Starting constructor");
-        rootItem = Ingredient.fromStacks(stack);
-        ingredientContainers = getIngredients(stack);
-        setTier();
+        rootItem = stack;
+        getIngredients(stack);
     }
 
-    public List<RecipeContainer> getIngredients(ItemStack stack) {
+    public void getIngredients(ItemStack stack) {
         BriefLogger.logInfo("Getting ingredients");
         Iterator<IRecipe> it = CraftingManager.REGISTRY.iterator();
         List<Ingredient> ingredientList = new ArrayList<>();
-        List<RecipeContainer> containerList = new ArrayList<>();
 
 
+        //Find recipe, get amount per craft and ingredient list
         while (it.hasNext()) {
             IRecipe recipe = it.next();
 
-            if(recipe instanceof ShapelessRecipes || recipe instanceof ShapedRecipes){
+            if (recipe instanceof ShapelessRecipes || recipe instanceof ShapedRecipes) {
                 ItemStack recipeOutput = recipe.getRecipeOutput();
 
-                if (recipeOutput.isItemEqual(stack)){
+                if (recipeOutput.isItemEqual(stack)) {
+                    rootItem.setCount(recipeOutput.getCount());
                     ingredientList = recipe.getIngredients();
                     break;
                 }
             }
         }
 
+        //Create a list of itemstacks with size for ingredients
         for (Ingredient ingredient : ingredientList) {
-            containerList.add(new RecipeContainer(ingredient.getMatchingStacks()[0]));
+            boolean exists = false;
+            for (ItemStack st : ingredientStacks) {
+                if (ingredient.getMatchingStacks()[0].isItemEqual(st)) {
+                    st.grow(1);
+                    exists = true;
+                    break;
+                }
+            }
+
+            if (!exists)
+                ingredientStacks.add(ingredient.getMatchingStacks()[0]);
         }
 
-        return containerList;
+        return;
     }
 
+    /*
     private void setTier() {
         BriefLogger.logInfo("Setting tier");
-        int counter = 0;
         int currentTier = -1;
         int lowestFound = 100;
 
-        if(ingredientContainers.isEmpty()){
+        if (countingMap.isEmpty()) {
             BriefLogger.logInfo("Is empty");
             tier = 0;
             return;
         }
 
-        while (lowestFound != 0 && counter++ < 1000){
+        while (lowestFound < 0) {
             BriefLogger.logInfo("Start while");
-            for (RecipeContainer container : ingredientContainers) {
+
+            for (RecipeContainer container : countingMap.keySet()) {
                 if (container.tier == -1) {
                     container.setTier();
                     lowestFound = -1;
@@ -86,15 +98,14 @@ public class RecipeContainer {
         tier = currentTier + 1;
         return;
     }
+    */
 
-    public void renderContainer(int x, int y){
+    public void renderContainer(int x, int y, Double count) {
         counter++;
         RenderItem renderItem = Minecraft.getMinecraft().getRenderItem();
-        renderItem.renderItemAndEffectIntoGUI(rootItem.getMatchingStacks()[0], x, y + (20 * counter));
-
-        BriefLogger.logInfo("Item: " + rootItem.getMatchingStacks()[0].toString() + ", Y: " + (y+(20*counter)));
-        for(RecipeContainer container : ingredientContainers){
-            container.renderContainer(x, y);
-        }
+        FontRenderer fontRenderer = Minecraft.getMinecraft().fontRenderer;
+        renderItem.renderItemAndEffectIntoGUI(rootItem, x, y + (20 * counter));
+        int color = 0xFFFFFF;
+        fontRenderer.drawStringWithShadow(Double.toString(rootItem.getCount()), x + 16, y + (20 * counter), color);
     }
 }

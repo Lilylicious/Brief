@@ -71,6 +71,6 @@ public class GUIDisplay extends GuiScreen {
 
    private void drawContainers(){
         RecipeContainer.counter = -1;
-        recipeContainer.renderContainer(guiLeft + 10, guiTop + 10);
+        recipeContainer.renderContainer(guiLeft + 10, guiTop + 10, (double) 1);
    }
 }
