@@ -16,8 +16,9 @@ public class RecipeContainer {
 
     public ItemStack rootItem;
 
-    public List<ItemStack> ingredientStacks;
+    public List<ItemStack> ingredientStacks = new ArrayList<>();
 
+    public boolean checked = false;
     public int tier = -1;
     public static int counter = -1;
 

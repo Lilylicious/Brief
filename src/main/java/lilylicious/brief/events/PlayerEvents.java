@@ -1,6 +1,7 @@
 package lilylicious.brief.events;
 
 import lilylicious.brief.BriefCore;
+import lilylicious.brief.recipes.CraftContainer;
 import lilylicious.brief.recipes.IngredientCache;
 import lilylicious.brief.recipes.RecipeContainer;
 import lilylicious.brief.utils.GuiHandler;
@@ -33,11 +34,12 @@ public class PlayerEvents {
         if (READ_ITEM.isPressed()) {
             EntityPlayerSP player = Minecraft.getMinecraft().player;
 
-            ItemStack stack = new ItemStack(Blocks.CRAFTING_TABLE);
+            ItemStack stack = new ItemStack(Blocks.OAK_FENCE);
+
+            CraftContainer cContainer = new CraftContainer(stack);
 
             //GuiHandler.rootItem = new RecipeContainer(stack);
-
-            player.openGui(BriefCore.instance, 0, player.getEntityWorld(), (int)player.posX, (int)player.posY, (int)player.posZ);
+            //player.openGui(BriefCore.instance, 0, player.getEntityWorld(), (int)player.posX, (int)player.posY, (int)player.posZ);
         }
     }
 
