@@ -10,7 +10,6 @@ import net.minecraft.item.crafting.*;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 public class RecipeContainer {
 
@@ -24,9 +23,14 @@ public class RecipeContainer {
 
     public RecipeContainer(ItemStack stack) {
         BriefLogger.logInfo("Starting constructor");
-        rootItem = stack;
+        rootItem = stack.copy();
         getIngredients(stack);
+        setTier();
     }
+
+    public RecipeContainer() {
+    }
+
 
     public void getIngredients(ItemStack stack) {
         BriefLogger.logInfo("Getting ingredients");
@@ -42,7 +46,7 @@ public class RecipeContainer {
                 ItemStack recipeOutput = recipe.getRecipeOutput();
 
                 if (recipeOutput.isItemEqual(stack)) {
-                    rootItem.setCount(recipeOutput.getCount());
+                    //rootItem.setCount(recipeOutput.getCount());
                     ingredientList = recipe.getIngredients();
                     break;
                 }
@@ -51,29 +55,32 @@ public class RecipeContainer {
 
         //Create a list of itemstacks with size for ingredients
         for (Ingredient ingredient : ingredientList) {
-            boolean exists = false;
-            for (ItemStack st : ingredientStacks) {
-                if (ingredient.getMatchingStacks()[0].isItemEqual(st)) {
-                    st.grow(1);
-                    exists = true;
-                    break;
+            if (ingredient != null && ingredient.getMatchingStacks().length > 0) {
+                boolean exists = false;
+                for (ItemStack st : ingredientStacks) {
+                    if (ingredient.getMatchingStacks()[0].isItemEqual(st)) {
+                        st.grow(1);
+                        exists = true;
+                        break;
+                    }
                 }
+
+                if (!exists)
+                    ingredientStacks.add(ingredient.getMatchingStacks()[0].copy());
             }
 
-            if (!exists)
-                ingredientStacks.add(ingredient.getMatchingStacks()[0]);
         }
 
         return;
     }
 
-    /*
+
     private void setTier() {
         BriefLogger.logInfo("Setting tier");
         int currentTier = -1;
         int lowestFound = 100;
 
-        if (countingMap.isEmpty()) {
+        if (ingredientStacks.isEmpty()) {
             BriefLogger.logInfo("Is empty");
             tier = 0;
             return;
@@ -82,7 +89,8 @@ public class RecipeContainer {
         while (lowestFound < 0) {
             BriefLogger.logInfo("Start while");
 
-            for (RecipeContainer container : countingMap.keySet()) {
+            for (ItemStack ingStack : ingredientStacks) {
+                RecipeContainer container = IngredientCache.getRecipe(ingStack);
                 if (container.tier == -1) {
                     container.setTier();
                     lowestFound = -1;
@@ -99,7 +107,7 @@ public class RecipeContainer {
         tier = currentTier + 1;
         return;
     }
-    */
+
 
     public void renderContainer(int x, int y, Double count) {
         counter++;
@@ -108,5 +116,17 @@ public class RecipeContainer {
         renderItem.renderItemAndEffectIntoGUI(rootItem, x, y + (20 * counter));
         int color = 0xFFFFFF;
         fontRenderer.drawStringWithShadow(Double.toString(rootItem.getCount()), x + 16, y + (20 * counter), color);
+    }
+
+    public RecipeContainer copy() {
+        RecipeContainer container = new RecipeContainer();
+
+        container.rootItem = this.rootItem;
+        container.tier = this.tier;
+
+        for (ItemStack stack : ingredientStacks)
+            container.ingredientStacks.add(stack.copy());
+
+        return container;
     }
 }

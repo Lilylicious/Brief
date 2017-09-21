@@ -11,6 +11,7 @@ import net.minecraft.client.settings.GameSettings;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
@@ -34,7 +35,7 @@ public class PlayerEvents {
         if (READ_ITEM.isPressed()) {
             EntityPlayerSP player = Minecraft.getMinecraft().player;
 
-            ItemStack stack = new ItemStack(Blocks.OAK_FENCE);
+            ItemStack stack = new ItemStack(Blocks.ANVIL);
 
             CraftContainer cContainer = new CraftContainer(stack);
 
