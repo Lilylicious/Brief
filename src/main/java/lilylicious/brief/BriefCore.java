@@ -11,7 +11,7 @@ import net.minecraftforge.fml.common.network.NetworkRegistry;
 
 import java.io.File;
 
-@Mod(modid = BriefCore.MODID, name = BriefCore.MODNAME, version = BriefCore.VERSION)
+@Mod(modid = BriefCore.MODID, name = BriefCore.MODNAME, version = BriefCore.VERSION, dependencies = "required-after:jei@[4.7.8.95,)", clientSideOnly = true)
 public class BriefCore
 {
     public static final String MODID = "brief";

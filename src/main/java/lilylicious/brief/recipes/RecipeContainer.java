@@ -16,13 +16,13 @@ public class RecipeContainer {
     public ItemStack rootItem;
 
     public List<ItemStack> ingredientStacks = new ArrayList<>();
+    public int amountPerCraft;
 
     public boolean checked = false;
     public int tier = -1;
     public static int counter = -1;
 
     public RecipeContainer(ItemStack stack) {
-        BriefLogger.logInfo("Starting constructor");
         rootItem = stack.copy();
         getIngredients(stack);
         setTier();
@@ -33,22 +33,41 @@ public class RecipeContainer {
 
 
     public void getIngredients(ItemStack stack) {
-        BriefLogger.logInfo("Getting ingredients");
-        Iterator<IRecipe> it = CraftingManager.REGISTRY.iterator();
+        Iterator<IRecipe> it1 = CraftingManager.REGISTRY.iterator();
+        Iterator<IRecipe> it2 = CraftingManager.REGISTRY.iterator();
         List<Ingredient> ingredientList = new ArrayList<>();
 
 
         //Find recipe, get amount per craft and ingredient list
-        while (it.hasNext()) {
-            IRecipe recipe = it.next();
+        while (it1.hasNext()) {
+            IRecipe recipe = it1.next();
+            boolean loopFound = false;
 
             if (recipe instanceof ShapelessRecipes || recipe instanceof ShapedRecipes) {
                 ItemStack recipeOutput = recipe.getRecipeOutput();
 
                 if (recipeOutput.isItemEqual(stack)) {
-                    //rootItem.setCount(recipeOutput.getCount());
-                    ingredientList = recipe.getIngredients();
-                    break;
+                    amountPerCraft = recipeOutput.getCount();
+                    while (it2.hasNext()) {
+                        IRecipe recipe2 = it2.next();
+
+                        if (recipe != recipe2 && recipe instanceof ShapelessRecipes || recipe instanceof ShapedRecipes) {
+                            ItemStack recipeOutput2 = recipe2.getRecipeOutput();
+
+                            for (Ingredient ingredient : recipe.getIngredients())
+                                for (Ingredient ingredient2 : recipe2.getIngredients())
+                                    if (ingredient.getMatchingStacks().length > 0 && ingredient2.getMatchingStacks().length > 0
+                                            && recipeOutput2.isItemEqual(ingredient.getMatchingStacks()[0])&& recipeOutput.isItemEqual(ingredient2.getMatchingStacks()[0]))
+                                        loopFound = true;
+                        }
+                    }
+
+                    if (!loopFound) {
+                        ingredientList = recipe.getIngredients();
+                        break;
+                    } else
+                        return;
+
                 }
             }
         }
@@ -68,26 +87,25 @@ public class RecipeContainer {
                 if (!exists)
                     ingredientStacks.add(ingredient.getMatchingStacks()[0].copy());
             }
-
         }
+
+        for(ItemStack ingStack : ingredientStacks)
+            ingStack.setCount(ingStack.getCount() * rootItem.getCount() / amountPerCraft);
 
         return;
     }
 
 
     private void setTier() {
-        BriefLogger.logInfo("Setting tier");
         int currentTier = -1;
         int lowestFound = 100;
 
         if (ingredientStacks.isEmpty()) {
-            BriefLogger.logInfo("Is empty");
             tier = 0;
             return;
         }
 
         while (lowestFound < 0) {
-            BriefLogger.logInfo("Start while");
 
             for (ItemStack ingStack : ingredientStacks) {
                 RecipeContainer container = IngredientCache.getRecipe(ingStack);
@@ -100,7 +118,6 @@ public class RecipeContainer {
                         lowestFound = currentTier;
                 }
             }
-            BriefLogger.logInfo("End while");
         }
 
 

@@ -48,6 +48,11 @@ repositories {
 dependencies {
     deobfCompile "mezz.jei:jei_1.12.1:4.7.8.95"
 
+    // compile against the JEI API but do not include it at runtime
+    deobfProvided "mezz.jei:jei_1.12.1:4.7.8.95:api"
+    // at runtime, use the full JEI jar
+    runtime "mezz.jei:jei_1.12.1:4.7.8.95"
+
     compile fileTree(dir: 'libs', include: '*.jar')
 }
 

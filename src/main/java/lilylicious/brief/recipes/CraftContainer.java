@@ -62,13 +62,10 @@ public class CraftContainer {
                 ingredientSummary.add(container.rootItem);
         }
 
-        for (RecipeContainer container : containerList)
-            BriefLogger.logInfo(container.rootItem.toString());
-
-            BriefLogger.logInfo("-----");
-
         for (ItemStack stack : ingredientSummary)
             BriefLogger.logInfo(stack.toString());
+
+        BriefLogger.logInfo("-----------");
 
         return;
     }

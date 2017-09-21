@@ -5,6 +5,7 @@
 *.iws
 .idea_modules/
 out/
+classes/
 
 # Gradle
 .gradle
