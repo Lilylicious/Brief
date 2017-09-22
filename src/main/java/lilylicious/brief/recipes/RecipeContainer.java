@@ -19,13 +19,26 @@ public class RecipeContainer {
     public int amountPerCraft;
 
     public boolean checked = false;
+    private boolean firstItem = false;
     public int tier = -1;
-    public static int counter = -1;
 
     public RecipeContainer(ItemStack stack) {
         rootItem = stack.copy();
         getIngredients(stack);
         setTier();
+    }
+
+    public RecipeContainer(ItemStack stack, boolean first) {
+        rootItem = stack.copy();
+
+        if(first)
+            firstItem = true;
+
+        getIngredients(stack);
+        setTier();
+
+
+
     }
 
     public RecipeContainer() {
@@ -48,6 +61,12 @@ public class RecipeContainer {
 
                 if (recipeOutput.isItemEqual(stack)) {
                     amountPerCraft = recipeOutput.getCount();
+
+                    IngredientCache.craftSizeCache.putIfAbsent(recipeOutput.getItem().getUnlocalizedName().toLowerCase(), amountPerCraft);
+
+                    if(firstItem)
+                        rootItem.setCount(amountPerCraft);
+
                     while (it2.hasNext()) {
                         IRecipe recipe2 = it2.next();
 
@@ -89,8 +108,10 @@ public class RecipeContainer {
             }
         }
 
-        for(ItemStack ingStack : ingredientStacks)
-            ingStack.setCount(ingStack.getCount() * rootItem.getCount() / amountPerCraft);
+        for(ItemStack ingStack : ingredientStacks){
+            ingStack.setCount((int)Math.ceil((double)ingStack.getCount() * (double)rootItem.getCount() / (double)amountPerCraft));
+        }
+
 
         return;
     }
@@ -122,17 +143,8 @@ public class RecipeContainer {
 
 
         tier = currentTier + 1;
+        IngredientCache.tierCache.putIfAbsent(rootItem.getItem().getUnlocalizedName().toLowerCase(), tier);
         return;
-    }
-
-
-    public void renderContainer(int x, int y, Double count) {
-        counter++;
-        RenderItem renderItem = Minecraft.getMinecraft().getRenderItem();
-        FontRenderer fontRenderer = Minecraft.getMinecraft().fontRenderer;
-        renderItem.renderItemAndEffectIntoGUI(rootItem, x, y + (20 * counter));
-        int color = 0xFFFFFF;
-        fontRenderer.drawStringWithShadow(Double.toString(rootItem.getCount()), x + 16, y + (20 * counter), color);
     }
 
     public RecipeContainer copy() {

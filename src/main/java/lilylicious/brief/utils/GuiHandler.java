@@ -1,6 +1,7 @@
 package lilylicious.brief.utils;
 
 import com.google.common.collect.ImmutableSet;
+import lilylicious.brief.recipes.CraftContainer;
 import lilylicious.brief.recipes.RecipeContainer;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -17,7 +18,7 @@ public class GuiHandler implements IGuiHandler {
     //IDs for non-tile GUIs
     private static final Set<Integer> ITEM_IDS = ImmutableSet.of();
 
-    public static RecipeContainer rootItem;
+    public static CraftContainer rootItem;
 
     @Override
     public Object getServerGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z) {

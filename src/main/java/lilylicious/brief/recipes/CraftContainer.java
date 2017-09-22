@@ -1,6 +1,9 @@
 package lilylicious.brief.recipes;
 
 import lilylicious.brief.utils.BriefLogger;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.renderer.RenderItem;
 import net.minecraft.item.ItemStack;
 
 import java.util.ArrayList;
@@ -22,13 +25,16 @@ public class CraftContainer {
     List<RecipeContainer> containerList = new ArrayList<>();
     List<ItemStack> ingredientSummary = new ArrayList<>();
 
+    RenderItem renderItem = Minecraft.getMinecraft().getRenderItem();
+    FontRenderer fontRenderer = Minecraft.getMinecraft().fontRenderer;
+
     public CraftContainer(ItemStack target) {
         targetStack = target;
         constructContainers();
     }
 
     private void constructContainers() {
-        containerList.add(getRecipe(targetStack));
+        containerList.add(new RecipeContainer(targetStack, true));
 
         boolean unCheckedExists = true;
 
@@ -74,7 +80,16 @@ public class CraftContainer {
         return IngredientCache.getRecipe(stack);
     }
 
-    private void addToSummary() {
 
+    public void renderContainer(int x, int y){
+        int color = 0xFFFFFF;
+
+        for(int i = 0; i < ingredientSummary.size(); i++){
+            renderItem.renderItemAndEffectIntoGUI(ingredientSummary.get(i), x, y + (20 * i));
+            fontRenderer.drawStringWithShadow(Double.toString(ingredientSummary.get(i).getCount()), x + 16, y + (20 * i), color);
+        }
+
+
+        return;
     }
 }

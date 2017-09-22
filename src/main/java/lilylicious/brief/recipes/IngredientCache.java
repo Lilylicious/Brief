@@ -13,6 +13,8 @@ import java.util.List;
 public class IngredientCache {
 
     private static HashMap<String, RecipeContainer> ingredientsCache = new HashMap();
+    public static HashMap<String, Integer> tierCache = new HashMap();
+    public static HashMap<String, Integer> craftSizeCache = new HashMap<>();
 
     private final static ItemStack[] excludedItems = {new ItemStack(Items.IRON_INGOT), new ItemStack(Blocks.IRON_BLOCK), new ItemStack(Items.IRON_NUGGET)};
 
@@ -23,15 +25,5 @@ public class IngredientCache {
 
 
         return ingredientsCache.get(stack.getItem().getUnlocalizedName().toLowerCase()).copy();
-    }
-
-    public static boolean isItemExcluded(ItemStack inStack){
-        boolean bool = false;
-
-        for(ItemStack stack : excludedItems)
-            if(stack.isItemEqual(inStack))
-                bool = true;
-
-        return bool;
     }
 }

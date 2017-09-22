@@ -3,23 +3,16 @@ package lilylicious.brief.events;
 import lilylicious.brief.BriefCore;
 import lilylicious.brief.jei.BriefPlugin;
 import lilylicious.brief.recipes.CraftContainer;
-import lilylicious.brief.recipes.IngredientCache;
-import lilylicious.brief.recipes.RecipeContainer;
 import lilylicious.brief.utils.GuiHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
-import net.minecraft.client.settings.GameSettings;
 import net.minecraft.client.settings.KeyBinding;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.client.event.GuiScreenEvent;
-import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
-import net.minecraftforge.fml.common.eventhandler.Event;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.InputEvent;
 import org.lwjgl.input.Keyboard;
 
 @SuppressWarnings("unused")
@@ -40,7 +33,8 @@ public class PlayerEvents {
         if (Keyboard.getEventKey() == READ_ITEM.getKeyCode() && !Keyboard.getEventKeyState()) {
             EntityPlayerSP player = Minecraft.getMinecraft().player;
 
-            //ItemStack stack = new ItemStack(Blocks.ANVIL);
+            /*
+            ItemStack stack = new ItemStack(Blocks.ANVIL);
 
             ItemStack[] testCases = {new ItemStack(Blocks.ANVIL),
                     new ItemStack(Blocks.OAK_FENCE),
@@ -50,19 +44,20 @@ public class PlayerEvents {
                     new ItemStack(Blocks.WOODEN_SLAB)
             };
 
-            //for(ItemStack stack : testCases)
-                //new CraftContainer(stack);
+            for(ItemStack stack : testCases)
+                new CraftContainer(stack);
+            */
 
             ItemStack underMouse = BriefPlugin.getItemUnderMouse();
-            if(!underMouse.isEmpty())
-                new CraftContainer(underMouse);
+            if (!underMouse.isEmpty()) {
+                GuiHandler.rootItem = new CraftContainer(underMouse);
+                player.openGui(BriefCore.instance, 0, player.getEntityWorld(), (int) player.posX, (int) player.posY, (int) player.posZ);
+            }
 
-            //GuiHandler.rootItem = new RecipeContainer(stack);
-            //player.openGui(BriefCore.instance, 0, player.getEntityWorld(), (int)player.posX, (int)player.posY, (int)player.posZ);
         }
     }
 
-    public void getItemUnderMouse(){
+    public void getItemUnderMouse() {
 
     }
 }

@@ -1,22 +1,12 @@
 package lilylicious.brief.client.gui;
 
 import lilylicious.brief.BriefCore;
+import lilylicious.brief.recipes.CraftContainer;
 import lilylicious.brief.recipes.RecipeContainer;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.ItemModelMesher;
-import net.minecraft.client.renderer.RenderHelper;
-import net.minecraft.client.renderer.RenderItem;
-import net.minecraft.client.renderer.block.model.IBakedModel;
-import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
-import net.minecraft.client.renderer.entity.RenderManager;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.client.ForgeHooksClient;
 
-import java.awt.*;
 import java.io.IOException;
 
 public class GUIDisplay extends GuiScreen {
@@ -30,10 +20,10 @@ public class GUIDisplay extends GuiScreen {
     private int guiLeft;
     private int guiTop;
 
-    private RecipeContainer recipeContainer;
+    private CraftContainer craftContainer;
 
-    public GUIDisplay(RecipeContainer container){
-        recipeContainer = container;
+    public GUIDisplay(CraftContainer container){
+        craftContainer = container;
     }
 
     @Override
@@ -70,7 +60,6 @@ public class GUIDisplay extends GuiScreen {
     }
 
    private void drawContainers(){
-        RecipeContainer.counter = -1;
-        recipeContainer.renderContainer(guiLeft + 10, guiTop + 10, (double) 1);
+        craftContainer.renderContainer(guiLeft + 10, guiTop + 10);
    }
 }
